@@ -49,7 +49,7 @@ def cancel(update: Update, context: CallbackContext) -> int:
 
 
 def main():
-    updater = Updater(TOKEN, use_context=True)
+    updater = Updater(TOKEN)
     dp = updater.dispatcher
 
     conv_handler = ConversationHandler(
@@ -65,7 +65,7 @@ def main():
     dp.add_handler(conv_handler)
 
     updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN)
-    updater.bot.setWebhook(f'https://bite-the-taste.herokuapp.com/{TOKEN}')
+    updater.bot.setWebhook(f'https://bite-the-taste-3e67e88ca643.herokuapp.com/{TOKEN}')
 
     updater.idle()
 
