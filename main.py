@@ -1,5 +1,6 @@
 import os
 import smtplib
+import re
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from telegram import Update, ReplyKeyboardMarkup
@@ -36,14 +37,22 @@ def choose_service(update: Update, context: CallbackContext) -> int:
 
 def receive_address(update: Update, context: CallbackContext) -> int:
     context.user_data['address'] = update.message.text
-    update.message.reply_text('Введіть ваш номер телефону:')
+    update.message.reply_text('Введіть ваш номер телефону у форматі +380*********:')
     return PHONE
 
 
 def receive_phone(update: Update, context: CallbackContext) -> int:
-    context.user_data['phone'] = update.message.text
-    update.message.reply_text('Введіть назву компанії:')
-    return COMPANY
+    phone_number = update.message.text
+
+    match = re.fullmatch(r'\+380\d{9}', phone_number)
+
+    if match:
+        context.user_data['phone'] = phone_number
+        update.message.reply_text('Введіть назву компанії:')
+        return COMPANY
+    else:
+        update.message.reply_text('Будь ласка, введіть вірний номер телефону у форматі +380*********')
+        return PHONE
 
 
 def receive_company(update: Update, context: CallbackContext) -> int:
