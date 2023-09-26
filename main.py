@@ -19,8 +19,8 @@ CHOOSE_SERVICE, ADDRESS, PHONE, COMPANY = range(4)
 def start(update: Update, context: CallbackContext) -> int:
     reply_keyboard = [['Order Services']]
     update.message.reply_text(
-        'Привіт!\n'
-        'Я — бот команди Bite The Taste. З моєю допомогою зможеш всього за два кліка зробити замовлення на дегустацію!',
+        'Привіт!\nЯ — бот команди Bite The Taste. З моєю допомогою зможеш всього за два кліка зробити замовлення на '
+        'дегустацію!',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
     )
     return CHOOSE_SERVICE
