@@ -7,6 +7,9 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Conve
 
 TOKEN = os.environ.get('TOKEN', '')
 
+sender_email = os.environ.get('SENDER_EMAIL', '')
+password = os.environ.get('EMAIL_PASSWORD', '')
+
 PORT = int(os.environ.get('PORT', 5000))
 
 CHOOSE_SERVICE, ADDRESS, PHONE, COMPANY = range(4)
@@ -54,25 +57,20 @@ def cancel(update: Update, context: CallbackContext) -> int:
     return ConversationHandler.END
 
 
-
 def send_email(user_data):
-    sender_email = "yanytskyidima@gmail.com"
-    receiver_email = "yanytskyidima@gmail.com"
-    password = "Dima2003tda7377"
-
     subject = 'New Order Received'
     body = f"Address: {user_data['address']}\nPhone: {user_data['phone']}\nCompany: {user_data['company']}"
 
     message = MIMEMultipart()
     message['From'] = sender_email
-    message['To'] = receiver_email
+    message['To'] = sender_email
     message['Subject'] = subject
     message.attach(MIMEText(body, 'plain'))
 
     with smtplib.SMTP('smtp.gmail.com', 587) as server:
         server.starttls()
         server.login(message['From'], password)
-        server.sendmail(sender_email, receiver_email, message.as_string())
+        server.sendmail(sender_email, sender_email, message.as_string())
 
 
 def main():
