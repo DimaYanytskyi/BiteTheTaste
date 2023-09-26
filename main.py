@@ -6,7 +6,7 @@ TOKEN = "6563939869:AAEzPgAX0_xAnJxKBg_1GKY1yT3CASPpCrY"
 
 PORT = int(os.environ.get('PORT', 5000))
 
-ADDRESS, PHONE, COMPANY = range(3)
+CHOOSE_SERVICE, ADDRESS, PHONE, COMPANY = range(4)
 
 
 def start(update: Update, context: CallbackContext) -> int:
@@ -15,7 +15,16 @@ def start(update: Update, context: CallbackContext) -> int:
         'Hello! Press "Order Services" to order our services.',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
     )
-    return ADDRESS
+    return CHOOSE_SERVICE
+
+
+def choose_service(update: Update, context: CallbackContext) -> int:
+    if update.message.text == 'Order Services':
+        update.message.reply_text('Please enter your address:')
+        return ADDRESS
+    else:
+        update.message.reply_text('Please press "Order Services" to proceed.')
+        return CHOOSE_SERVICE
 
 
 def receive_address(update: Update, context: CallbackContext) -> int:
@@ -55,6 +64,7 @@ def main():
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start)],
         states={
+            CHOOSE_SERVICE: [MessageHandler(Filters.text & ~Filters.command, choose_service)],
             ADDRESS: [MessageHandler(Filters.text & ~Filters.command, receive_address)],
             PHONE: [MessageHandler(Filters.text & ~Filters.command, receive_phone)],
             COMPANY: [MessageHandler(Filters.text & ~Filters.command, receive_company)],
