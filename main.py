@@ -18,48 +18,49 @@ CHOOSE_SERVICE, ADDRESS, PHONE, COMPANY = range(4)
 def start(update: Update, context: CallbackContext) -> int:
     reply_keyboard = [['Order Services']]
     update.message.reply_text(
-        'Hello! Press "Order Services" to order our services.',
+        'Привіт!'
+        'Я — бот команди Bite The Taste. З моєю допомогою зможеш всього за два кліка зробити замовлення на дегустацію!',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
     )
     return CHOOSE_SERVICE
 
 
 def choose_service(update: Update, context: CallbackContext) -> int:
-    if update.message.text == 'Order Services':
-        update.message.reply_text('Please enter your address:')
+    if update.message.text == 'Замовити Дегустацію':
+        update.message.reply_text('Введіть вашу адресу:')
         return ADDRESS
     else:
-        update.message.reply_text('Please press "Order Services" to proceed.')
+        update.message.reply_text('Будь-ласка натисніть Замовити Дегустацію.')
         return CHOOSE_SERVICE
 
 
 def receive_address(update: Update, context: CallbackContext) -> int:
     context.user_data['address'] = update.message.text
-    update.message.reply_text('Please enter your phone number:')
+    update.message.reply_text('Введіть ваш номер телефону:')
     return PHONE
 
 
 def receive_phone(update: Update, context: CallbackContext) -> int:
     context.user_data['phone'] = update.message.text
-    update.message.reply_text('Please enter your company name:')
+    update.message.reply_text('Введіть назву компанії:')
     return COMPANY
 
 
 def receive_company(update: Update, context: CallbackContext) -> int:
     context.user_data['company'] = update.message.text
     send_email(context.user_data)
-    update.message.reply_text('Thank you! Your order has been placed.')
+    update.message.reply_text('Дякую! Ми вам зателефонуємо.')
     return ConversationHandler.END
 
 
 def cancel(update: Update, context: CallbackContext) -> int:
-    update.message.reply_text('Order cancelled. To restart the process, press /start.')
+    update.message.reply_text('Замовлення скасоване. Щоб заново розпочати натисніть /start.')
     return ConversationHandler.END
 
 
 def send_email(user_data):
-    subject = 'New Order Received'
-    body = f"Address: {user_data['address']}\nPhone: {user_data['phone']}\nCompany: {user_data['company']}"
+    subject = 'Нове замовлення дегустації'
+    body = f"Адреса: {user_data['address']}\nНомер телефону: {user_data['phone']}\nКомпанія: {user_data['company']}"
 
     message = MIMEMultipart()
     message['From'] = sender_email
