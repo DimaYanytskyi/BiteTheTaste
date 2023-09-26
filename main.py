@@ -3,7 +3,7 @@ import smtplib
 import re
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from telegram import Update, ReplyKeyboardMarkup
+from telegram import Update, ReplyKeyboardMarkup, ReplyKeyboardRemove
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler, CallbackContext
 
 TOKEN = os.environ.get('TOKEN', '')
@@ -28,7 +28,7 @@ def start(update: Update, context: CallbackContext) -> int:
 
 def choose_service(update: Update, context: CallbackContext) -> int:
     if update.message.text == 'Замовити Дегустацію':
-        update.message.reply_text('Введіть вашу адресу:')
+        update.message.reply_text('Введіть вашу адресу:', reply_markup=ReplyKeyboardRemove())
         return ADDRESS
     else:
         update.message.reply_text('Будь-ласка натисніть Замовити Дегустацію.')
