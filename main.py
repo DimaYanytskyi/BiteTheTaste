@@ -1,8 +1,11 @@
 import os
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler, CallbackContext
 
-TOKEN = "6563939869:AAEzPgAX0_xAnJxKBg_1GKY1yT3CASPpCrY"
+TOKEN = os.environ.get('TOKEN', '')
 
 PORT = int(os.environ.get('PORT', 5000))
 
@@ -46,15 +49,30 @@ def receive_company(update: Update, context: CallbackContext) -> int:
     return ConversationHandler.END
 
 
-def send_email(user_data):
-    subject = 'New Order Received'
-    body = f"Address: {user_data['address']}\nPhone: {user_data['phone']}\nCompany: {user_data['company']}"
-    message = f'Subject: {subject}\n\n{body}'
-
-
 def cancel(update: Update, context: CallbackContext) -> int:
     update.message.reply_text('Order cancelled. To restart the process, press /start.')
     return ConversationHandler.END
+
+
+
+def send_email(user_data):
+    sender_email = "yanytskyidima@gmail.com"
+    receiver_email = "yanytskyidima@gmail.com"
+    password = "Dima2003tda7377"
+
+    subject = 'New Order Received'
+    body = f"Address: {user_data['address']}\nPhone: {user_data['phone']}\nCompany: {user_data['company']}"
+
+    message = MIMEMultipart()
+    message['From'] = sender_email
+    message['To'] = receiver_email
+    message['Subject'] = subject
+    message.attach(MIMEText(body, 'plain'))
+
+    with smtplib.SMTP('smtp.gmail.com', 587) as server:
+        server.starttls()
+        server.login(message['From'], password)
+        server.sendmail(sender_email, receiver_email, message.as_string())
 
 
 def main():
